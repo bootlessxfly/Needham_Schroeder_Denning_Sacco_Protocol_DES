@@ -40,6 +40,17 @@ public class Actor {
 	// The last received message in the protocol by this user.
 	private String lastReceivedMessage = "";
 	
+	// This is used to validate communication between user 1 and user 2. Once the nonce 'r2' has been validated betwen
+	// both sides, we can have communications.
+	// This is not for use with authenticating servers
+	// Without this we can not confirm possible replay attacks
+	private boolean receivedOtherNonce = false;
+	
+	// This is used to see if this actors has validated his nonce for this session
+	// This is not for use with authenticating servers
+	// WIthout this we can not confirm possible replay attacks
+	private boolean receivedMyNonce = false;
+	
 	// For creating a non authenticating actor
 	public Actor(String inName, String inPubKey, String inNonce) {
 		name = inName;
@@ -103,6 +114,22 @@ public class Actor {
 	
 	public String getLastReceivedMess() {
 		return lastReceivedMessage;
+	}
+	
+	public void receivedOtherNonce() {
+		receivedOtherNonce = true;
+	}
+	
+	public boolean getReceivedOtherNonce() {
+		return receivedOtherNonce;
+	}
+	
+	public void receivedMyNonce() {
+		receivedMyNonce = true;
+	}
+	
+	public boolean getReceivedMyNonce() {
+		return receivedMyNonce;
 	}
 	
 }

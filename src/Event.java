@@ -125,9 +125,13 @@ public class Event {
 	private String encryptSessionKey(String lastMessage) {
 		String encSessionKey;
 		String[] messageIds = lastMessage.split("\\|\\|");
+		if (messageIds.length < 2) {
+			return "Possible Replay Attack";
+		}
 		//The second person in the introduction is who we want to encrypt this session for.
 		// The first person in the ID is going to receive the session key encrypted in a different spot
 		String publicKey = sendingActor.getKey(messageIds[1]);
+		
 		
 		encSessionKey = "{" + receivingActor.getName() + "||" + genTimeStamp() + "||" + sendingActor.getSessionKey() + "}" + publicKey;
 		return encSessionKey;
@@ -148,6 +152,9 @@ public class Event {
 		if (lastMessage.contains("}" + pubKey)) {
 			//Decrypt the string using the senders private key
 			lastMessage = lastMessage.substring(1,lastMessage.length() - (pubKey.length() + 1));
+			if (lastMessage.contains(sendingActor.getNonce())) {
+				sendingActor.receivedMyNonce();
+			}
 			// Let the send get the session key
 			addSessionKey(lastMessage);
 			// Retrieve the encrypted session key to send to the other party
@@ -155,6 +162,7 @@ public class Event {
 				lastMessage = lastMessage.substring(lastMessage.indexOf("{")+1, 
 						lastMessage.length() - (receivingActor.getPubKey().length() + 1));
 			}
+
 		}
 		return lastMessage;
 	}
@@ -164,14 +172,36 @@ public class Event {
 		// Check to see if this is the sending actors message being confirmed. If if it, return the message the sender 
 		// is trying to send the desired message back.
 		if (lastMessage.contains("{" + sendingActor.getNonce())) {
-			return message;
+			
+			// Check to see if the receiver has already validated her nonce, and if so we can set out 'other' to true
+			if (receivingActor.getReceivedMyNonce()) {
+				sendingActor.receivedOtherNonce();
+			}
+			// The sender has received and validated his nonce, we can set this to true 
+			sendingActor.receivedMyNonce();
+			// The receivor's nonce has now been validated, so we can confirm it
+			// At the end of this, both the receiver and sender should have confirmed their nonces
+			
+			
+			
+			
+			if (receivingActor.getReceivedOtherNonce() && sendingActor.getReceivedOtherNonce() && receivingActor.getReceivedMyNonce() && sendingActor.getReceivedMyNonce()) {
+				return message;
+			}
+			return "Possible replay attack has occured";
 		}
 		// Check to see if the receiving actor has already sent his nonce for validation,
 		// if they have, then you want to send a confirmation back to them
 		else if (lastMessage.contains("{" + receivingActor.getNonce())) {
+			sendingActor.receivedOtherNonce();
 			return receivingActor.getNonce() + " + 1";
 		}
-		return "";
+		if (receivingActor.getReceivedOtherNonce() && sendingActor.getReceivedOtherNonce() && receivingActor.getReceivedMyNonce() && sendingActor.getReceivedMyNonce()) {
+			return "";
+		}
+		// If this the nonce on both sides have not been confirmed at some point during this simulation, we will send back an err
+		// This will keep messages being sent when we are not fully authenticated
+		return "Possible replay attack has occured";
 	}
 	
 	// This will run each event

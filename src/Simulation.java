@@ -1,4 +1,16 @@
+/*
+ ============================================================================
+ Name        : hamming_code_generator.c
+ Author      : Christoph White
+ Version     :
+ Copyright   : Please do not copy this without letting me know first. This is
+ a learning piece of code that all can reference to use. Anyone taking comp6370 at Suburn
+ should refrain from copying this code.
 
+ Description : This class runs the simulation. It looks for the starting event, and then looks for each next event
+ untill the final event is found. 
+ ============================================================================
+ */
 
 import java.util.HashMap;
 import java.util.List;
