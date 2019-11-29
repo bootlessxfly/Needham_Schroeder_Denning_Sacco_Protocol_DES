@@ -57,6 +57,16 @@ public class Main {
 				// Create an event with session key generation set to true to start session key generation from cathy
 				add(new Event(cathy, alice, "sending encrypted session key back to", 33, 12, true, false));  
 				
+				
+				/*
+				 * This is an example how you would simulate a bad R2.
+				 * add(new Event(bob, alice, "validating timestamp and then sending his/her nonce encryped with session key to ", 83, 3, true, true));
+				 */
+				
+				/*
+				 * add(new Event(bob, alice, "validating timestamp and then sending his/her nonce encryped with session key to ", 83, 3, "{Alice||2019-11-29 16:53:23||Ks}Kb"));
+				 */
+				
 				// Bob gets the session key, and then sends his confirmation nonce back to Alice so she can confirm herself
 				add(new Event(bob, alice, "validating timestamp and then sending his/her nonce encryped with session key to ", 83, 3, true, false));
 				
@@ -81,6 +91,11 @@ public class Main {
 				// Bob sends a message to alice indicating he is ready to talk
 				add(new Event(bob, alice,"Hey " + alice.getName() + " , glad we where able to verify each other. What did you want to talk about?", 
 						" confirmed and talking to ", 1033, 9));
+				
+				/*
+				 * This is an example of how to simulate a bad r1
+				 * add(new Event(alice, cathy, alice.getName() + "||" + bob.getName() + "||" + "RBAD", "sending introduction", 1, 33)); 		
+				 */
 				
 				// Send an introduction to cathy, indicating that she needs a session key for Bob and Alice to communicate. This is start message
 				add(new Event(alice, cathy, alice.getName() + "||" + bob.getName() + "||" + alice.getNonce(), "sending introduction", 1, 33)); 				

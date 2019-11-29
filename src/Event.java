@@ -40,7 +40,7 @@ public class Event {
 	private int nextEventTime;
 	
 	// The encrypted message
-	private String encryptedMessage;
+	private String encryptedMessage = "";
 	
 	//The message or initial message this event should send. If not provided, we use "last received message"
 	private String message = "";
@@ -83,6 +83,15 @@ public class Event {
 		actionMess = action;
 		time = currTime;
 		nextEventTime = nextTime;
+	}
+	
+	public Event(Actor sendor, Actor receiver,String action, int currTime, int nextTime, String replayedMessage) {
+		sendingActor = sendor;
+		receivingActor = receiver;
+		actionMess = action;
+		time = currTime;
+		nextEventTime = nextTime;
+		encryptedMessage = replayedMessage;
 	}
 	
 	public int getCurrentTime() {
@@ -192,7 +201,8 @@ public class Event {
 			
 			
 			
-			if (receivingActor.getReceivedOtherNonce() && sendingActor.getReceivedOtherNonce() && receivingActor.getReceivedMyNonce() && sendingActor.getReceivedMyNonce()) {
+			if (receivingActor.getReceivedOtherNonce() && sendingActor.getReceivedOtherNonce() 
+					&& receivingActor.getReceivedMyNonce() && sendingActor.getReceivedMyNonce()) {
 				return message;
 			}
 			return "Possible replay attack has occured";
@@ -203,7 +213,8 @@ public class Event {
 			sendingActor.receivedOtherNonce();
 			return receivingActor.getNonce() + " + 1";
 		}
-		if (receivingActor.getReceivedOtherNonce() && sendingActor.getReceivedOtherNonce() && receivingActor.getReceivedMyNonce() && sendingActor.getReceivedMyNonce()) {
+		if (receivingActor.getReceivedOtherNonce() && sendingActor.getReceivedOtherNonce() 
+				&& receivingActor.getReceivedMyNonce() && sendingActor.getReceivedMyNonce()) {
 			return "";
 		}
 		// If this the nonce on both sides have not been confirmed at some point during this simulation, we will send back an err
@@ -231,12 +242,30 @@ public class Event {
 	
 	// This will run each event
 	public void runEvent(Map<String, Actor> currentActorState) {
+		String decryptedMessage = "";
+		if (!encryptedMessage.isEmpty()) {
+			decryptedMessage = encryptedMessage.substring(1,encryptedMessage.length() - (sendingActor.getPubKey().length() + 1));
+			// We will simulate a replay attack here
+			System.out.println("\nRunning the Event for time label: " + time);
+			System.out.println(sendingActor.getName() + " is " + actionMess + " to " + receivingActor.getName() + ".");
+			System.out.println("The encrypted message is: " + encryptedMessage);
+			System.out.println("The decrypted message is: " + decryptedMessage);
+			System.out.println("Moving to next event in simulation.");
+			
+			// The receiving actor stores the received encrypted message
+			receivingActor.setLastReceivedMess(encryptedMessage);
+			
+			
+			// At the end of each event, we want to update the state of the sending and receiving actor.
+			currentActorState.put(sendingActor.getName(), sendingActor);
+			currentActorState.put(receivingActor.getName(), receivingActor);
+		}
 		// Indicates whether the session should be generated or added by the receiver during this event.
 		boolean genSessionKey = false;
 		
 		// Indicated whether the nonce needs to be added to the message
 		boolean addNonce = false;
-		String decryptedMessage = "";
+		
 		// At the beginning of each event, we want to retrieve the current state of each actor
 		sendingActor = currentActorState.get(sendingActor.getName());
 		receivingActor = currentActorState.get(receivingActor.getName());
