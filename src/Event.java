@@ -15,8 +15,12 @@
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class Event {
+	// IF a timestamp in the session key is found more than x minutes outside of the current time, we will
+	// indicate that a replay attack has occured. This variable sets the delay
+	private final long delayBeforeInvalidTime = 10;
 	
 	// This is the name we will assign to the generated session keys
 	private final String sessionKeyName = "Ks"; 
@@ -116,7 +120,7 @@ public class Event {
 	// This generates a timestamp for the session key.
 	// Timestamps allows for replay attacks to be stopped
 	private String genTimeStamp() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		return sdf.format(ts);
 	}
@@ -204,6 +208,24 @@ public class Event {
 		return "Possible replay attack has occured";
 	}
 	
+	// While this method is a little un-needed for this protocol in simulation, this would validate that the timestamp is within range of the timeout
+	// range specified by the protocol. If it is out of range, we return false and indicate to all involved parties that a replay attack is happenning
+	// At this point no more valid messages are sent untill we try and create a new session
+	public boolean validateTime(String lastMessage) {
+		lastMessage = lastMessage.substring(1,lastMessage.length() - (sendingActor.getSessionKey().length() + 1));
+		String[] messageArray = lastMessage.split("\\|\\|");
+		if (messageArray.length < 2) {
+			return false;
+		}
+		Timestamp ts = Timestamp.valueOf(messageArray[1]);
+		Timestamp validTimeRangeTimestamp = new Timestamp(System.currentTimeMillis());
+		validTimeRangeTimestamp.setTime(validTimeRangeTimestamp.getTime() + TimeUnit.MINUTES.toMillis(delayBeforeInvalidTime));
+		if (ts.before(validTimeRangeTimestamp)) {
+			return true;
+		}
+		return false;
+	}
+	
 	// This will run each event
 	public void runEvent(Map<String, Actor> currentActorState) {
 		// Indicates whether the session should be generated or added by the receiver during this event.
@@ -249,7 +271,12 @@ public class Event {
 		
 		if (addNonce) {
 			// Here the sendor would confirm that the timestamp was valid and that a replay attack was not ocuring in the last message
-			decryptedMessage = sendingActor.getNonce();
+			if (validateTime(lastMessage)) {
+				decryptedMessage = sendingActor.getNonce();
+			}
+			else {
+				decryptedMessage = "Possible replay attack has occured";
+			}
 
 		}
 		
