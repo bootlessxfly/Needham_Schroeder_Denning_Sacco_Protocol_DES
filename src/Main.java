@@ -55,10 +55,10 @@ public class Main {
 						"confirmed and talking to ", 34, 90000123));
 				
 				// Create an event with session key generation set to true to start session key generation from cathy
-				add(new Event(cathy, alice, "sending encrypted session key back to", 33, 12, true));  
+				add(new Event(cathy, alice, "sending encrypted session key back to", 33, 12, true, false));  
 				
 				// Bob gets the session key, and then sends his confirmation nonce back to Alice so she can confirm herself
-				add(new Event(bob, alice, "validating timestamp and then sending his/her nonce encryped with session key to ", 83, 3, true));
+				add(new Event(bob, alice, "validating timestamp and then sending his/her nonce encryped with session key to ", 83, 3, true, false));
 				
 				// The flirting has completed, so we close the session. This ends our simulation
 				add(new Event(bob, alice, "That sounds splendid. Ill see you tonight. Ill go ahead and end our communication",

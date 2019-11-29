@@ -52,6 +52,8 @@ public class Event {
 	// or for adding the nonce
 	private boolean genSessionKeyOrNonce = false;
 	
+	private boolean useBadNonceR2 = false;
+	
 	// This is the contructor to use for any event where a message is needed to be sent.
 	public Event(Actor sendor, Actor receiver, String inMessage, String action, int currTime, int nextTime) {
 		sendingActor = sendor;
@@ -64,13 +66,14 @@ public class Event {
 	
 	// This is used when we need to generate wither the Nonce or session key. Uses the "last received message" for 
 	// message maniuplation
-	public Event(Actor sendor, Actor receiver,String action, int currTime, int nextTime, boolean inGenSessionOrNonce) {
+	public Event(Actor sendor, Actor receiver,String action, int currTime, int nextTime, boolean inGenSessionOrNonce, boolean useBadNonce2) {
 		sendingActor = sendor;
 		receivingActor = receiver;
 		actionMess = action;
 		time = currTime;
 		nextEventTime = nextTime;
 		genSessionKeyOrNonce = inGenSessionOrNonce;
+		useBadNonceR2 = useBadNonce2;
 	}
 	
 	// This constructor is used to generate some message based off of the last received message in the communication
@@ -272,7 +275,13 @@ public class Event {
 		if (addNonce) {
 			// Here the sendor would confirm that the timestamp was valid and that a replay attack was not ocuring in the last message
 			if (validateTime(lastMessage)) {
-				decryptedMessage = sendingActor.getNonce();
+				if (useBadNonceR2) {
+					//Create a bad nonce
+					decryptedMessage = "RBAD";
+				}
+				else {
+					decryptedMessage = sendingActor.getNonce();
+				}
 			}
 			else {
 				decryptedMessage = "Possible replay attack has occured";
