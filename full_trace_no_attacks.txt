@@ -1,0 +1,77 @@
+Starting Discrete Event Simulation
+Alice's nonce is r1
+Bob's nonce is r2
+Before the simulation, Alice adds their public key to Cathy's keyStore
+Before the simulation, Bob adds their public key to Cathy's keyStore
+
+Running time sequence event: T0
+Running the Event for time label: 1
+Alice is sending introduction to Cathy.
+The encrypted message is: Alice||Bob||r1
+The decrypted message is: Alice||Bob||r1
+Moving to next event in simulation.
+
+Running time sequence event: T1
+Running the Event for time label: 33
+Cathy is sending encrypted session key back to to Alice.
+The encrypted message is: {Alice||Bob||r1||Ks||{Alice||2019-11-29 18:53:48||Ks}Kb}Ka
+The decrypted message is: Alice||Bob||r1||Ks||{Alice||2019-11-29 18:53:48||Ks}Kb
+Moving to next event in simulation.
+
+Running time sequence event: T2
+Running the Event for time label: 12
+Alice is sending Bob's encrypted session key to  to Bob.
+The encrypted message is: {Alice||2019-11-29 18:53:48||Ks}Kb
+The decrypted message is: Alice||2019-11-29 18:53:48||Ks
+Moving to next event in simulation.
+
+Running time sequence event: T3
+Running the Event for time label: 83
+Bob is validating timestamp and then sending his/her nonce encryped with session key to  to Alice.
+The encrypted message is: {r2}Ks
+The decrypted message is: r2
+Moving to next event in simulation.
+
+Running time sequence event: T4
+Running the Event for time label: 3
+Alice is sending his/her confirmation  to Bob.
+The encrypted message is: {r2 + 1}Ks
+The decrypted message is: r2 + 1
+Moving to next event in simulation.
+
+Running time sequence event: T5
+Running the Event for time label: 1033
+Bob is  confirmed and talking to  to Alice.
+The encrypted message is: {Hey Alice , glad we where able to verify each other. What did you want to talk about?}Ks
+The decrypted message is: Hey Alice , glad we where able to verify each other. What did you want to talk about?
+Moving to next event in simulation.
+
+Running time sequence event: T6
+Running the Event for time label: 9
+Alice is confirmed and talking to  to Bob.
+The encrypted message is: {Bob, thanks for confirming it was you, I just wanted to tell you that you where the most beautiful person on this side of the Mississippi}Ks
+The decrypted message is: Bob, thanks for confirming it was you, I just wanted to tell you that you where the most beautiful person on this side of the Mississippi
+Moving to next event in simulation.
+
+Running time sequence event: T7
+Running the Event for time label: 1000000
+Bob is confirmed and talking to  to Alice.
+The encrypted message is: {Wow that is the most flattering thing I have ever heard. I think you are stunning also}Ks
+The decrypted message is: Wow that is the most flattering thing I have ever heard. I think you are stunning also
+Moving to next event in simulation.
+
+Running time sequence event: T8
+Running the Event for time label: 34
+Alice is confirmed and talking to  to Bob.
+The encrypted message is: {How about we go grab dinner at Mcdonalds at 5 tonight? I see that it is your favorite.}Ks
+The decrypted message is: How about we go grab dinner at Mcdonalds at 5 tonight? I see that it is your favorite.
+Moving to next event in simulation.
+
+Running time sequence event: T9
+Running the Event for time label: 90000123
+Bob is confirmed and talking to  to Alice.
+The encrypted message is: {That sounds splendid. Ill see you tonight. Ill go ahead and end our communication}Ks
+The decrypted message is: That sounds splendid. Ill see you tonight. Ill go ahead and end our communication
+Moving to next event in simulation.
+
+The end of the simulation has been reached.

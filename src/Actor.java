@@ -51,6 +51,8 @@ public class Actor {
 	// WIthout this we can not confirm possible replay attacks
 	private boolean receivedMyNonce = false;
 	
+	private boolean timestampValid = true;
+	
 	// For creating a non authenticating actor
 	public Actor(String inName, String inPubKey, String inNonce) {
 		name = inName;
@@ -130,6 +132,14 @@ public class Actor {
 	
 	public boolean getReceivedMyNonce() {
 		return receivedMyNonce;
+	}
+	
+	public void setTimeValid() {
+		timestampValid = false;
+	}
+	
+	public boolean getTimeValid() {
+		return timestampValid;
 	}
 	
 }

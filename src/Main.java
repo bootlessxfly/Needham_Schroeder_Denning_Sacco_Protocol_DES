@@ -21,8 +21,10 @@ public class Main {
 	public static void main(String[] args) {
 		System.out.println("Starting Discrete Event Simulation");
 		Actor alice = new Actor("Alice", "Ka", "r1");
+		System.out.println(alice.getName() + "'s nonce is " + alice.getNonce());
 		//creating communicating party num 2
 		Actor bob = new Actor("Bob", "Kb", "r2");
+		System.out.println(bob.getName() + "'s nonce is " + bob.getNonce());
 		
 		// create the authenticating service names cathy
 		Actor cathy = new Actor("Cathy");
@@ -64,8 +66,11 @@ public class Main {
 				 */
 				
 				/*
-				 * add(new Event(bob, alice, "validating timestamp and then sending his/her nonce encryped with session key to ", 83, 3, "{Alice||2019-11-29 16:53:23||Ks}Kb"));
+				 * This is an example how you would simulate a bad timestamp.
+				 * add(new Event(bob, alice, "validating timestamp and then sending his/her nonce encryped with session key to ", 83, 3, true, "{Alice||2019-11-29 17:46:55||Ks}Kb"));
 				 */
+				
+				
 				
 				// Bob gets the session key, and then sends his confirmation nonce back to Alice so she can confirm herself
 				add(new Event(bob, alice, "validating timestamp and then sending his/her nonce encryped with session key to ", 83, 3, true, false));
@@ -82,7 +87,7 @@ public class Main {
 						"confirmed and talking to ", 1000000, 34));
 				
 				// Alice decrypts the message, stores the key, and then sends the key to bob so that he can have the session
-				add(new Event(alice, bob, "", "sending " + bob.getName() + "'s encrypted session key to ", 12, 83));
+				add(new Event(alice, bob, "sending " + bob.getName() + "'s encrypted session key to ", 12, 83));
 				
 				// Alice flirts with bob
 				add(new Event(alice, bob,bob.getName() + ", thanks for confirming it was you, I just wanted to tell you that you where the most beautiful person on this side of the Mississippi",
